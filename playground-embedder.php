@@ -34,30 +34,30 @@ class playground_embedder {
 	 *
 	 * @return string Shortcode output.
 	 */
-	public function shortcode_output( $attributes ) {
-		$query_parameters = shortcode_atts(
+	public function shortcode_output( $attributes, $blueprint = '' ) {
+		$attributes = shortcode_atts(
 			[
 				'width'        => 800,
 				'height'       => 600,
-				'wp'           => 'latest',
-				'php'          => '8.0',
-				'plugin'       => '',
-				'theme'        => '',
-				'url'          => '/wp-admin/',
-				'mode'         => 'seamless',
-				'login'        => 1,
-				'gutenberg-pr' => '',
 				'start_button' => 1,
 			],
 			$attributes
 		);
-		$query_parameters = array_filter( $query_parameters, static function( $element ) {
-			return ! empty( $element );
-		} );
 
-		$url = add_query_arg( $query_parameters, 'https://playground.wordpress.net/' );
+		$blueprint = wp_json_encode( json_decode( $blueprint ) );
+		$url       = add_query_arg( [ 'start_button' => $attributes['start_button'] ], 'https://playground.wordpress.net/remote.html' );
 
-		return sprintf( '<iframe src="%1$s" width="800" height="600"></iframe>', $url );
+		$random_id = rand( 0, 5000 );
+
+		return '<iframe id="wp-' . $random_id . '" style="width: ' . $attributes['width'] . 'px; height: ' . $attributes['height'] . 'px"></iframe>
+<script type="module">
+    import { startPlaygroundWeb } from \'https://unpkg.com/@wp-playground/client/index.js\';
+    const client = await startPlaygroundWeb({
+        iframe: document.getElementById(\'wp-' . $random_id . '\'),
+        remoteUrl: \'' . $url . '\',
+        blueprint: ' . $blueprint . ',
+    } );
+</script>';
 	}
 }
 
