@@ -44,7 +44,16 @@ class playground_embedder {
 			$attributes
 		);
 
-		$blueprint = wp_json_encode( json_decode( $blueprint ) );
+		// Remove line breaks.
+		$blueprint = preg_replace('#<br\s*/?>#i', "\n", $blueprint );
+		// Replace nice typography quotes with double quotes.
+		$blueprint = trim( str_replace( [ "&#8220;", "&#8221;" ], '"', $blueprint ) );
+		// Remove unneeded newlines etc.
+		$blueprint = preg_replace( '/\s+/', ' ', $blueprint );
+		// Parse as JSON.
+		$blueprint = json_decode( $blueprint );
+		$blueprint = wp_json_encode( $blueprint, JSON_PRETTY_PRINT );
+
 		$url       = add_query_arg( [ 'start_button' => $attributes['start_button'] ], 'https://playground.wordpress.net/remote.html' );
 
 		$random_id = rand( 0, 5000 );
@@ -53,8 +62,8 @@ class playground_embedder {
 <script type="module">
     import { startPlaygroundWeb } from \'https://unpkg.com/@wp-playground/client/index.js\';
     const client = await startPlaygroundWeb({
-        iframe: document.getElementById(\'wp-' . $random_id . '\'),
-        remoteUrl: \'' . $url . '\',
+        iframe: document.getElementById("wp-' . $random_id . '"),
+        remoteUrl: "' . $url . '",
         blueprint: ' . $blueprint . ',
     } );
 </script>';
