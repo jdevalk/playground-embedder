@@ -25,6 +25,7 @@ class playground_embedder {
 	 */
 	public function init() {
 		add_shortcode( 'wp_playground', [ $this, 'shortcode_output' ] );
+		register_block_type( __DIR__ . '/build');
 	}
 
 	/**
@@ -59,14 +60,14 @@ class playground_embedder {
 		$random_id = rand( 0, 5000 );
 
 		return '<iframe id="wp-' . $random_id . '" style="width: ' . $attributes['width'] . 'px; height: ' . $attributes['height'] . 'px"></iframe>
-<script type="module">
-    import { startPlaygroundWeb } from \'https://unpkg.com/@wp-playground/client/index.js\';
-    const client = await startPlaygroundWeb({
-        iframe: document.getElementById("wp-' . $random_id . '"),
-        remoteUrl: "' . $url . '",
-        blueprint: ' . $blueprint . ',
-    } );
-</script>';
+			<script type="module">
+				import { startPlaygroundWeb } from \'https://unpkg.com/@wp-playground/client/index.js\';
+				const client = await startPlaygroundWeb({
+					iframe: document.getElementById("wp-' . $random_id . '"),
+					remoteUrl: "' . $url . '",
+					blueprint: ' . $blueprint . ',
+				} );
+			</script>';
 	}
 }
 
