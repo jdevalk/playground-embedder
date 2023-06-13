@@ -12,8 +12,7 @@ import { __ } from '@wordpress/i18n';
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
 import { useBlockProps, InspectorControls } from "@wordpress/block-editor";
-import { PanelBody, TextControl, SelectControl, ToggleControl } from "@wordpress/components";
-
+import { PanelBody, TextControl, TextareaControl, ToggleControl, SelectControl} from "@wordpress/components";
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -31,44 +30,44 @@ import './editor.scss';
  *
  * @return {WPElement} Element to render.
  */
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes, clientId } ) {
 
 	const {
 		width,
 		height,
-		wp,
-		php,
-		theme,
-		plugin,
-		mode
+		startButton,
+		blueprint
 	} = attributes;
 
+
+	// Build URL with parameters
 	let queryParams = {
+		start_button: startButton,
 		height: height,
 		width: width,
-		wp: wp,
-		php: php,
-		theme: theme,
-		plugin: plugin,
-		mode: mode
+		mode: 'seamless'
 	};
 
-
-	// queryParams = Object.fromEntries(Object.entries(queryParams).filter(([_, v]) => (v != null) || v != ""));
-	if( typeof queryParams === 'object' ){
-		console.log('is object');
-	}
 	Object.fromEntries(Object.entries(queryParams).filter(x => x[1] !==''));
-	console.log(queryParams)
-
 	const urlParams = new URLSearchParams(queryParams);
 
-	const url = `https://playground.wordpress.net/?${urlParams}`;
+	// Add blueprint support
+	let cleanedBlueprint = blueprint.replace(/<br\s*\/?>/gi, '\n');
+	// Replace nice typography quotes with double quotes.
+	cleanedBlueprint = cleanedBlueprint.replace(/&#8220;|&#8221;/g, '"');
+	// Remove unneeded newlines etc.
+	cleanedBlueprint = cleanedBlueprint.replace(/\s+/g, ' ');
+	// Parse as JSON.
+	JSON.parse(cleanedBlueprint);
+	JSON.stringify(cleanedBlueprint, null, 4);
+
+
+	const url = `https://playground.wordpress.net/?${urlParams}#${cleanedBlueprint}`;
 
 	return (
 		<div { ...useBlockProps() }className="wordress-playground wp-block">
 			<InspectorControls>
-				<PanelBody title="Size" initialOpen={ true }>
+				<PanelBody title="Settings" initialOpen={ true }>
 					<TextControl
 						label="Width"
 						value={ width }
@@ -79,67 +78,23 @@ export default function Edit( { attributes, setAttributes } ) {
 						value={ height }
 						onChange={ (val) => setAttributes( {height: val }) }
 					/>
-				</PanelBody>
-				<PanelBody title="Versions" initialOpen={ false }>
-					<SelectControl
-						label="WordPress"
-						value={ wp }
-						options={ [
-							{ label: 'Latest', value: 'latest' },
-							{ label: '6.2', value: '6.2' },
-							{ label: '6.1', value: '6.1' },
-							{ label: '6.0', value: '6.0' },
-							{ label: '5.9', value: '5.9' },
-						] }
-						onChange={ ( val ) => setAttributes( {wp: val } ) }
-					/>
-					<SelectControl
-						label="PHP"
-						value={ php }
-						options={ [
-							{ label: 'Latest', value: 'latest' },
-							{ label: '8.2', value: '8.2' },
-							{ label: '8.1', value: '8.1' },
-							{ label: '8.0', value: '8.0' },
-							{ label: '7.4', value: '7.4' },
-							{ label: '7.3', value: '7.3' },
-							{ label: '7.2', value: '7.2' },
-							{ label: '7.1', value: '7.1' },
-							{ label: '7.0', value: '7.0' },
-							{ label: '5.6', value: '5.6' },
-
-						] }
-						onChange={ ( val ) => setAttributes( {php: val } ) }
-					/>
-				</PanelBody>
-				<PanelBody title="Themes & Plugins " initialOpen={ false }>
-					<TextControl
-						label="Theme"
-						value={ theme }
-						onChange={ (val) => setAttributes( {theme: val }) }
-					/>
-					<TextControl
-						label="Plugin"
-						value={ plugin }
-						onChange={ (val) => setAttributes( {plugin: val }) }
-					/>
-				</PanelBody>
-				<PanelBody title="Settings" initialOpen={ false }>
 					<ToggleControl
-						label="Mode"
-						help={
-							mode
-								? 'Displays WordPress on a full-page.'
-								: 'Wrapped in a browser UI'
-						}
-						checked={ mode }
-						onChange={ () => {
-							setAttributes( ( mode ) => ! mode );
-						} }
+						label="Start button"
+						help={startButton ? "Show start button" : "Hide start button"}
+						checked={startButton}
+						onChange={() => setAttributes({ startButton: startButton === 0 ? 1 : 0 })}
+					/>
+				</PanelBody>
+				<PanelBody title="Options" initialOpen={ true }>
+					<TextareaControl
+						label="Blueprint"
+						value={ blueprint }
+						rows="26"
+						onChange={ (val) => setAttributes( {blueprint: val }) }
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<iframe src={url} width={width} height={height}	></iframe>
+			<iframe id={`wp-${clientId}`} src={url} width={width} height={height}></iframe>
 		</div>
 	);
 }

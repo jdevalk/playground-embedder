@@ -58,39 +58,40 @@ __webpack_require__.r(__webpack_exports__);
  */
 function Edit({
   attributes,
-  setAttributes
+  setAttributes,
+  clientId
 }) {
   const {
     width,
     height,
-    wp,
-    php,
-    theme,
-    plugin,
-    mode
+    startButton,
+    blueprint
   } = attributes;
+
+  // Build URL with parameters
   let queryParams = {
+    start_button: startButton,
     height: height,
     width: width,
-    wp: wp,
-    php: php,
-    theme: theme,
-    plugin: plugin,
-    mode: mode
+    mode: 'seamless'
   };
-
-  // queryParams = Object.fromEntries(Object.entries(queryParams).filter(([_, v]) => (v != null) || v != ""));
-  if (typeof queryParams === 'object') {
-    console.log('is object');
-  }
   Object.fromEntries(Object.entries(queryParams).filter(x => x[1] !== ''));
-  console.log(queryParams);
   const urlParams = new URLSearchParams(queryParams);
-  const url = `https://playground.wordpress.net/?${urlParams}`;
+
+  // Add blueprint support
+  let cleanedBlueprint = blueprint.replace(/<br\s*\/?>/gi, '\n');
+  // Replace nice typography quotes with double quotes.
+  cleanedBlueprint = cleanedBlueprint.replace(/&#8220;|&#8221;/g, '"');
+  // Remove unneeded newlines etc.
+  cleanedBlueprint = cleanedBlueprint.replace(/\s+/g, ' ');
+  // Parse as JSON.
+  JSON.parse(cleanedBlueprint);
+  JSON.stringify(cleanedBlueprint, null, 4);
+  const url = `https://playground.wordpress.net/?${urlParams}#${cleanedBlueprint}`;
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)(), {
     className: "wordress-playground wp-block"
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: "Size",
+    title: "Settings",
     initialOpen: true
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl, {
     label: "Width",
@@ -104,94 +105,25 @@ function Edit({
     onChange: val => setAttributes({
       height: val
     })
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: "Versions",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
-    label: "WordPress",
-    value: wp,
-    options: [{
-      label: 'Latest',
-      value: 'latest'
-    }, {
-      label: '6.2',
-      value: '6.2'
-    }, {
-      label: '6.1',
-      value: '6.1'
-    }, {
-      label: '6.0',
-      value: '6.0'
-    }, {
-      label: '5.9',
-      value: '5.9'
-    }],
-    onChange: val => setAttributes({
-      wp: val
-    })
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
-    label: "PHP",
-    value: php,
-    options: [{
-      label: 'Latest',
-      value: 'latest'
-    }, {
-      label: '8.2',
-      value: '8.2'
-    }, {
-      label: '8.1',
-      value: '8.1'
-    }, {
-      label: '8.0',
-      value: '8.0'
-    }, {
-      label: '7.4',
-      value: '7.4'
-    }, {
-      label: '7.3',
-      value: '7.3'
-    }, {
-      label: '7.2',
-      value: '7.2'
-    }, {
-      label: '7.1',
-      value: '7.1'
-    }, {
-      label: '7.0',
-      value: '7.0'
-    }, {
-      label: '5.6',
-      value: '5.6'
-    }],
-    onChange: val => setAttributes({
-      php: val
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
+    label: "Start button",
+    help: startButton ? "Show start button" : "Hide start button",
+    checked: startButton,
+    onChange: () => setAttributes({
+      startButton: startButton === 0 ? 1 : 0
     })
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: "Themes & Plugins ",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl, {
-    label: "Theme",
-    value: theme,
+    title: "Options",
+    initialOpen: true
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextareaControl, {
+    label: "Blueprint",
+    value: blueprint,
+    rows: "26",
     onChange: val => setAttributes({
-      theme: val
+      blueprint: val
     })
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl, {
-    label: "Plugin",
-    value: plugin,
-    onChange: val => setAttributes({
-      plugin: val
-    })
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: "Settings",
-    initialOpen: false
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
-    label: "Mode",
-    help: mode ? 'Displays WordPress on a full-page.' : 'Wrapped in a browser UI',
-    checked: mode,
-    onChange: () => {
-      setAttributes(mode => !mode);
-    }
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("iframe", {
+    id: `wp-${clientId}`,
     src: url,
     width: width,
     height: height
@@ -355,7 +287,7 @@ function _extends() {
   \*************************************/
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/playground-embed","version":"0.1.0","title":"Playground Embed","category":"widgets","icon":"art","description":"Embeds the WordPress playground through a block.","supports":{"html":false},"textdomain":"playground-embed","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","attributes":{"width":{"type":"string","default":"1200"},"height":{"type":"string","default":"600"},"wp":{"type":"string","default":"latest"},"php":{"type":"string","default":"latest"},"theme":{"type":"string","default":""},"plugin":{"type":"string","default":""},"mode":{"type":"boolean","default":true}}}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"tdrayson/playground-embed","version":"0.1.0","title":"Playground Embed","category":"widgets","icon":"art","description":"Embeds the WordPress playground through a block.","supports":{"html":false},"textdomain":"playground-embed","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","attributes":{"width":{"type":"string","default":"1200"},"height":{"type":"string","default":"600"},"startButton":{"type":"integer","default":1},"blueprint":{"type":"string","default":"{\\n    \\"landingPage\\": \\"/wp-admin/\\",\\n    \\"preferredVersions\\": {\\n        \\"php\\": \\"8.0\\",\\n        \\"wp\\": \\"latest\\"\\n    },\\n    \\"steps\\": [\\n        {\\n            \\"step\\": \\"login\\",\\n            \\"username\\": \\"admin\\",\\n            \\"password\\": \\"password\\"\\n        },\\n        {\\n            \\"step\\": \\"installPlugin\\",\\n            \\"pluginZipFile\\": {\\n                \\"resource\\": \\"wordpress.org/plugins\\",\\n                \\"slug\\": \\"wordpress-seo\\"\\n            },\\n            \\"options\\": {\\n                \\"activate\\": true\\n            }\\n        }\\n    ]\\n}"}}}');
 
 /***/ })
 

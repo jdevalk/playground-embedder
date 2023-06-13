@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "create-block/playground-embed",
+	"name": "tdrayson/playground-embed",
 	"version": "0.1.0",
 	"title": "Playground Embed",
 	"category": "widgets",
@@ -24,25 +24,13 @@
 			"type": "string",
 			"default": "600"
 		},
-		"wp": {
-			"type": "string",
-			"default": "latest"
+		"startButton": {
+			"type": "integer",
+			"default": 1
 		},
-		"php": {
+		"blueprint": {
 			"type": "string",
-			"default": "latest"
-		},
-		"theme": {
-			"type": "string",
-			"default": ""
-		},
-		"plugin": {
-			"type": "string",
-			"default": ""
-		},
-		"mode": {
-			"type": "boolean",
-			"default": true
+			"default": "{\n    \"landingPage\": \"/wp-admin/\",\n    \"preferredVersions\": {\n        \"php\": \"8.0\",\n        \"wp\": \"latest\"\n    },\n    \"steps\": [\n        {\n            \"step\": \"login\",\n            \"username\": \"admin\",\n            \"password\": \"password\"\n        },\n        {\n            \"step\": \"installPlugin\",\n            \"pluginZipFile\": {\n                \"resource\": \"wordpress.org/plugins\",\n                \"slug\": \"wordpress-seo\"\n            },\n            \"options\": {\n                \"activate\": true\n            }\n        }\n    ]\n}"
 		}
 	}
 }
