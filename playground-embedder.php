@@ -25,6 +25,7 @@ class playground_embedder {
 	 */
 	public function init() {
 		add_shortcode( 'wp_playground', [ $this, 'shortcode_output' ] );
+		register_block_type( __DIR__ . '/build');
 	}
 
 	/**
@@ -37,8 +38,8 @@ class playground_embedder {
 	public function shortcode_output( $attributes ) {
 		$query_parameters = shortcode_atts(
 			[
-				'width'        => 800,
-				'height'       => 600,
+				'width'        => 1200,
+				'height'       => 800,
 				'wp'           => 'latest',
 				'php'          => '8.0',
 				'plugin'       => '',
@@ -57,7 +58,7 @@ class playground_embedder {
 
 		$url = add_query_arg( $query_parameters, 'https://playground.wordpress.net/' );
 
-		return sprintf( '<iframe src="%1$s" width="800" height="600"></iframe>', $url );
+		return sprintf( '<iframe src="%1$s" width="%2$s" height="%3$s"></iframe>', $url, $query_parameters['width'], $query_parameters['height'] );
 	}
 }
 

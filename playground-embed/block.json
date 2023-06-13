@@ -1,0 +1,48 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "create-block/playground-embed",
+	"version": "0.1.0",
+	"title": "Playground Embed",
+	"category": "widgets",
+	"icon": "art",
+	"description": "Embeds the WordPress playground through a block.",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "playground-embed",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"attributes":{
+		"width": {
+			"type": "string",
+			"default": "1200"
+		},
+		"height": {
+			"type": "string",
+			"default": "600"
+		},
+		"wp": {
+			"type": "string",
+			"default": "latest"
+		},
+		"php": {
+			"type": "string",
+			"default": "latest"
+		},
+		"theme": {
+			"type": "string",
+			"default": ""
+		},
+		"plugin": {
+			"type": "string",
+			"default": ""
+		},
+		"mode": {
+			"type": "boolean",
+			"default": true
+		}
+	}
+}
