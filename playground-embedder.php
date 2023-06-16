@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Playground Embedder
+Plugin Name: Playground embedder
 Plugin URI: https://wordpress.org/plugins/playground-embedder/
 Description: Embeds the WordPress playground through a shortcode.
 Version: 1.0
@@ -44,28 +44,39 @@ class playground_embedder {
 			$attributes
 		);
 
+		$width     = (int) $attributes['width'];
+		$height    = (int) $attributes['height'];
+		$random_id = rand( 0, 5000 );
+		$url       = add_query_arg( [ 'start_button' => $attributes['start_button'] ], 'https://playground.wordpress.net/remote.html' );
+		$wh_string = '';
+		if ( $width !== 0 && $height !== 0 ) {
+			$wh_string = 'style="width: ' . $width . 'px; height: ' . $height . 'px"';
+		}
+
 		// Remove line breaks.
 		$blueprint = preg_replace('#<br\s*/?>#i', "\n", $blueprint );
 		// Replace nice typography quotes with double quotes.
 		$blueprint = trim( str_replace( [ "&#8220;", "&#8221;" ], '"', $blueprint ) );
 		// Remove unneeded newlines etc.
 		$blueprint = preg_replace( '/\s+/', ' ', $blueprint );
+
 		// Parse as JSON.
 		$blueprint = json_decode( $blueprint );
+		// Decoding failed, turn blueprint into an empty object.
+		if ( $blueprint === null ) {
+			$blueprint = (object) [];
+		}
+		// Re-encode to make sure it's valid JSON and escaped properly.
 		$blueprint = wp_json_encode( $blueprint, JSON_PRETTY_PRINT );
 
-		$url       = add_query_arg( [ 'start_button' => $attributes['start_button'] ], 'https://playground.wordpress.net/remote.html' );
-
-		$random_id = rand( 0, 5000 );
-
-		return '<iframe id="wp-' . $random_id . '" style="width: ' . $attributes['width'] . 'px; height: ' . $attributes['height'] . 'px"></iframe>
+		return '<iframe class="wp-playground" id="wp-' . $random_id . '" ' . $wh_string . '></iframe>
 <script type="module">
-    import { startPlaygroundWeb } from \'https://unpkg.com/@wp-playground/client/index.js\';
-    const client = await startPlaygroundWeb({
-        iframe: document.getElementById("wp-' . $random_id . '"),
-        remoteUrl: "' . $url . '",
-        blueprint: ' . $blueprint . ',
-    } );
+  import { startPlaygroundWeb } from \'https://unpkg.com/@wp-playground/client/index.js\';
+  const client = await startPlaygroundWeb({
+    iframe: document.getElementById("wp-' . $random_id . '"),
+    remoteUrl: "' . $url . '",
+    blueprint: ' . $blueprint . ',
+  });
 </script>';
 	}
 }
