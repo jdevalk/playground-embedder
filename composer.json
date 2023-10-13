@@ -1,0 +1,26 @@
+{
+	"name": "joostdevalk/fewer-tags",
+	"description": "Plugin that redirects tag pages to the home page if they contain fewer than a specified number of posts.",
+	"type": "wordpress-plugin",
+	"license": "GPL 3+",
+	"authors": [
+		{
+			"name": "Joost de Valk",
+			"email": "joost@joost.blog"
+		}
+	],
+	"require-dev": {
+		"phpcompatibility/php-compatibility": "*",
+		"wp-coding-standards/wpcs": "^3.0"
+	},
+	"prefer-stable": true,
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
+		"post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
+	}
+}
