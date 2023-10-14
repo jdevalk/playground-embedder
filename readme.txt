@@ -12,12 +12,17 @@ Embeds the WordPress playground through a shortcode.
 == Description ==
 Add the WordPress playground by adding a `[wp_playground]` shortcode to your pages. This plugin supports all the attributes the playground supports, which [you can find here](https://wordpress.github.io/wordpress-playground/docs/query-api#available-options).
 
-An additional feature is that you can lazy load the playground by adding `lazy=1` to the shortcode, like so:
+By default, the plugin lazy loads the playground, so it's only loaded after a button click. An additional feature is that you 
+can decide not to lazy load the playground by adding `lazy=0` to the shortcode, like so:
 
-```[wp_playground lazy=1]```
+    [wp_playground lazy=0]
 
-At this point the plugin renders a button and only loads the playground when that button is pressed.
+At this point the plugin renders the playground immediately.
 
+== Screenshots ==
+
+1. A default button loaded when the playground is inserted into a page.
+2. The playground in action, this time loaded with `lazy=0`.
 
 == Changelog ==
 
