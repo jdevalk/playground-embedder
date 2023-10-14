@@ -74,6 +74,8 @@
 		<include-pattern>*\.php</include-pattern>
 	</rule>
 
+	<config name="minimum_wp_version" value="6.0"/>
+
 
 	<!--
 	#############################################################################
@@ -90,9 +92,7 @@
 	the wiki:
 	https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties
 	-->
-	<config name="minimum_wp_version" value="6.0"/>
-	<config name="installed_paths" value="vendor/phpcompatibility/php-compatibility" />
-
+	
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
@@ -104,7 +104,7 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="Joost"/>
+				<element value="Playground"/>
 			</property>
 		</properties>
 	</rule>
