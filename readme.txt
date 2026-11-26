@@ -1,6 +1,6 @@
 === Playground Embedder ===
 Contributors: joostdevalk
-Tested up to: 6.2
+Tested up to: 7.2
 Stable tag: 1.1
 Requires at least: 6.0
 Requires PHP: 7.4
